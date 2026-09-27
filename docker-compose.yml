@@ -1,0 +1,60 @@
+services:
+  # 1. سرویس اصلی هسته IAM
+  iam-core:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: iam_central_core
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATABASE_URL=postgresql://iam_user:SecureIamPass992@postgres:5432/central_iam?schema=public
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=SecureRedisClusterPass99
+      - JWT_MASTER_ENCRYPTION_KEY=vault_master_k2991024_symmetric_key
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - iam_network
+
+  # 2. پایگاه داده PostgreSQL 16
+  postgres:
+    image: postgres:16-alpine
+    container_name: iam_postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: iam_user
+      POSTGRES_PASSWORD: SecureIamPass992
+      POSTGRES_DB: central_iam
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - iam_network
+
+  # 3. کَش توزیع‌شده Redis 7 (نشست‌ها، بلک‌لیست و Rate Limit)
+  redis:
+    image: redis:7-alpine
+    container_name: iam_redis_cache
+    restart: always
+    command: ["redis-server", "--requirepass", "SecureRedisClusterPass99", "--maxmemory", "512mb", "--maxmemory-policy", "volatile-lru"]
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - iam_network
+
+networks:
+  iam_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:

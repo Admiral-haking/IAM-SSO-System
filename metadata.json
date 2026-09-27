@@ -1,0 +1,6 @@
+{
+  "name": "سیستم مدیریت هویت و دسترسی متمرکز (Centralized IAM / SSO)",
+  "description": "معماری کامل، مشخصات فنی، مستندات پیاده‌سازی و شبیه‌ساز مهندسی سیستم IAM و Identity Provider با پشتیبانی از OAuth2/OIDC، RBAC و Multi-Tenancy",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
